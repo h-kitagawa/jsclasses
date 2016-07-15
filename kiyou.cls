@@ -467,8 +467,8 @@
 \prebreakpenalty\jis"2147=10000      % 5000   ’
 \postbreakpenalty\jis"2148=10000     % 5000   “
 \prebreakpenalty\jis"2149=10000      % 5000   ”
-\inhibitxspcode`！=1
-\inhibitxspcode`〒=2
+\inhibitxspcode\jis"212A=1 % ！
+\inhibitxspcode\jis"2229=2 % 〒
 \xspcode`+=3
 \xspcode`\%=3
 \xspcode`^^80=3
@@ -1377,15 +1377,36 @@
   \ifdim \wd\@tempboxa <\hsize \centering \fi
   #1\hskip1zw\relax #2\par
   \vskip\belowcaptionskip}}
-\DeclareOldFontCommand{\mc}{\normalfont\mcfamily}{\mathmc}
-\DeclareOldFontCommand{\gt}{\normalfont\gtfamily}{\mathgt}
-\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
-\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
-\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
-\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
-\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
-\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
-\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+\newcommand*{\jsc@DeclareOldFontCommand}[3]{%
+  \DeclareOldFontCommand{#1}{%
+    \jsc@warnoldfontcmd{#1}#2%
+  }{%
+    \jsc@warnoldfontcmd{#1}#3%
+  }%
+}
+\DeclareRobustCommand*{\jsc@warnoldfontcmd}[1]{%
+  \ClassWarning{%
+kiyou%
+  }{%
+    deprecated old font command `\string#1' used.\MessageBreak
+    You should note, that since 1994 LaTeX2e provides a\MessageBreak
+    new font selection scheme called NFSS2 with several\MessageBreak
+    new, combinable font commands. This
+kiyou
+    class\MessageBreak
+    has defined the old font commands like `\string#1'\MessageBreak
+    only for compatibility%
+  }%
+}
+\jsc@DeclareOldFontCommand{\mc}{\normalfont\mcfamily}{\mathmc}
+\jsc@DeclareOldFontCommand{\gt}{\normalfont\gtfamily}{\mathgt}
+\jsc@DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\jsc@DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\jsc@DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\jsc@DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\jsc@DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\jsc@DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\jsc@DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
 \DeclareRobustCommand*{\cal}{\@fontswitch\relax\mathcal}
 \DeclareRobustCommand*{\mit}{\@fontswitch\relax\mathnormal}
 \newcommand\@pnumwidth{1.55em}
