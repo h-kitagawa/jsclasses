@@ -1384,6 +1384,10 @@
   \ifdim \wd\@tempboxa <\hsize \centering \fi
   #1\hskip1zw\relax #2\par
   \vskip\belowcaptionskip}}
+\newif\if@jsc@warnoldfontcmd
+\@jsc@warnoldfontcmdtrue
+\newif\if@jsc@warnoldfontcmdexception
+\@jsc@warnoldfontcmdexceptionfalse
 \newcommand*{\jsc@DeclareOldFontCommand}[3]{%
   \DeclareOldFontCommand{#1}{%
     \jsc@warnoldfontcmd{#1}#2%
@@ -1392,6 +1396,7 @@
   }%
 }
 \DeclareRobustCommand*{\jsc@warnoldfontcmd}[1]{%
+  \if@jsc@warnoldfontcmdexception\else\if@jsc@warnoldfontcmd
   \ClassWarning{%
 jsarticle%
   }{%
@@ -1404,6 +1409,8 @@ jsarticle
     has defined the old font commands like `\string#1'\MessageBreak
     only for compatibility%
   }%
+  \global\@jsc@warnoldfontcmdfalse
+  \fi\fi
 }
 \jsc@DeclareOldFontCommand{\mc}{\normalfont\mcfamily}{\mathmc}
 \jsc@DeclareOldFontCommand{\gt}{\normalfont\gtfamily}{\mathgt}
@@ -1501,6 +1508,7 @@ jsarticle
 \newdimen\bibindent
 \setlength\bibindent{2zw}
 \newenvironment{thebibliography}[1]{%
+  \global\@jsc@warnoldfontcmdexceptiontrue
   \global\let\presectionname\relax
   \global\let\postsectionname\relax
   \section*{\refname}\@mkboth{\refname}{\refname}%
@@ -1519,7 +1527,8 @@ jsarticle
    \sfcode`\.\@m}
   {\def\@noitemerr
     {\@latex@warning{Empty `thebibliography' environment}}%
-   \endlist}
+   \endlist
+   \global\@jsc@warnoldfontcmdexceptionfalse}
 \newcommand{\newblock}{\hskip .11em\@plus.33em\@minus.07em}
 \let\@openbib@code\@empty
 \newenvironment{theindex}{% 索引を3段組で出力する環境

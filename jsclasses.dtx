@@ -26,7 +26,7 @@
 %  Copyright 2016 Japanese TeX Development Community
 %
 % \fi
-% \CheckSum{5812}
+% \CheckSum{5829}
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
 %%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
@@ -4267,6 +4267,20 @@
 % [2016-07-15] KOMA-Script中の |\scr@DeclareOldFontCommand| に倣い、
 % これらの命令を使うときには警告を発することにしました。
 %
+% [2016-07-16] 警告を最初の一回だけ発することにしました。また，
+% 例外的に警告を出さないようにするスイッチも付けます。
+%
+% \begin{macro}{\if@jsc@warnoldfontcmd}
+% \begin{macro}{\if@jsc@warnoldfontcmdexception}
+%    \begin{macrocode}
+\newif\if@jsc@warnoldfontcmd
+\@jsc@warnoldfontcmdtrue
+\newif\if@jsc@warnoldfontcmdexception
+\@jsc@warnoldfontcmdexceptionfalse
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
 % \begin{macro}{\jsc@DeclareOldFontCommand}
 %    \begin{macrocode}
 \newcommand*{\jsc@DeclareOldFontCommand}[3]{%
@@ -4277,6 +4291,7 @@
   }%
 }
 \DeclareRobustCommand*{\jsc@warnoldfontcmd}[1]{%
+  \if@jsc@warnoldfontcmdexception\else\if@jsc@warnoldfontcmd
   \ClassWarning{%
 %<article>jsarticle%
 %<book>jsbook%
@@ -4295,6 +4310,8 @@
     has defined the old font commands like `\string#1'\MessageBreak
     only for compatibility%
   }%
+  \global\@jsc@warnoldfontcmdfalse
+  \fi\fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -4749,8 +4766,13 @@
 %
 % 参考文献リストを出力します。
 %
+% [2016-07-16] \LaTeX~2.09で使われていたフォントコマンドの警告を，
+% 文献スタイル（.bst）ではよく |\bf| がいまだに用いられることが多いため，
+% |thebibliography| 環境内では例外的に出さないようにしました。
+%
 %    \begin{macrocode}
 \newenvironment{thebibliography}[1]{%
+  \global\@jsc@warnoldfontcmdexceptiontrue
   \global\let\presectionname\relax
   \global\let\postsectionname\relax
 %<article|jspf>  \section*{\refname}\@mkboth{\refname}{\refname}%
@@ -4777,7 +4799,8 @@
    \sfcode`\.\@m}
   {\def\@noitemerr
     {\@latex@warning{Empty `thebibliography' environment}}%
-   \endlist}
+   \endlist
+   \global\@jsc@warnoldfontcmdexceptionfalse}
 %    \end{macrocode}
 % \end{environment}
 %
