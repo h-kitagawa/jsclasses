@@ -38,6 +38,7 @@
 \NeedsTeXFormat{pLaTeX2e}
 \ProvidesClass{jsbook}
   [2016/07/15 okumura, texjporg]
+\def\jsc@clsname{jsbook}
 \newif\if@restonecol
 \newif\if@titlepage
 \newif\if@openright
@@ -228,6 +229,25 @@
   \setlength\@tempdima  {\paperheight}
   \setlength\paperheight{\paperwidth}
   \setlength\paperwidth {\@tempdima}
+\fi
+\ifnum \ifx\ucs\@undefined\z@\else\ucs"3000 \fi ="3000
+  \if@jsc@uplatex\else
+    \ClassError\jsc@clsname
+      {You are running upLaTeX.\MessageBreak
+       Please use pLaTeX instead, or add 'uplatex' to\MessageBreak
+       the class option list}
+      {\@ehc}
+    \@jsc@uplatextrue
+  \fi
+\else
+  \if@jsc@uplatex
+    \ClassError\jsc@clsname
+      {You are running pLaTeX.\MessageBreak
+       Please use upLaTeX instead, or remove 'uplatex' from\MessageBreak
+       the class option list}
+      {\@ehc}
+    \@jsc@uplatexfalse
+  \fi
 \fi
 \newdimen\stockwidth \newdimen\stockheight
 \setlength{\stockwidth}{\paperwidth}
@@ -1458,15 +1478,11 @@
 }
 \DeclareRobustCommand*{\jsc@warnoldfontcmd}[1]{%
   \if@jsc@warnoldfontcmdexception\else\if@jsc@warnoldfontcmd
-  \ClassWarning{%
-jsbook%
-  }{%
+  \ClassWarning{\jsc@clsname}{%
     deprecated old font command `\string#1' used.\MessageBreak
     You should note, that since 1994 LaTeX2e provides a\MessageBreak
     new font selection scheme called NFSS2 with several\MessageBreak
-    new, combinable font commands. This
-jsbook
-    class\MessageBreak
+    new, combinable font commands. This \jsc@clsname\space class\MessageBreak
     has defined the old font commands like `\string#1'\MessageBreak
     only for compatibility%
   }%
